@@ -13,10 +13,10 @@ define('bullet', function() {
       this.x += Math.sin(Math.radians(this.movementDir)) * this.movementSpeed * deltaTime;
       this.y += Math.cos(Math.radians(this.movementDir)) * this.movementSpeed * deltaTime;
 
-      if (this.x - this.outerRadius > stg.screenWidth
-          ||  this.x + this.outerRadius < 0
-          ||  this.y - this.outerRadius > stg.screenHeight
-          ||  this.y + this.outerRadius < 0) {
+      if (this.x - this.drawRadius > stg.screenWidth
+          ||  this.x + this.drawRadius < 0
+          ||  this.y - this.drawRadius > stg.screenHeight
+          ||  this.y + this.drawRadius < 0) {
         this.isPendingKill = true;
       };
     };
