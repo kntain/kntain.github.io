@@ -1,5 +1,6 @@
 var patternsDir = 'patterns/';
 var patternScripts = [
+  'welcome',
   'radial-burst',
   'radial-burst-fast'
 ];

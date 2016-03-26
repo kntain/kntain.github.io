@@ -1,4 +1,4 @@
-define('utils', ['bullet'], function() {
+define('utils', ['bullet'], function(Bullet) {
   Math.radians = function(degrees) {
     return degrees * Math.PI / 180;
   };
@@ -6,6 +6,38 @@ define('utils', ['bullet'], function() {
   Math.degrees = function(radians) {
     return radians * 180 / Math.PI;
   };
+
+  Math.sind = function(x) {
+    return Math.degrees(Math.sin(x));
+  };
+
+  Math.cosd = function(x) {
+    return Math.degrees(Math.cos(x));
+  };
+
+  Math.tand = function(x) {
+    return Math.degrees(Math.tan(x));
+  };
+
+  Math.acosd = function(x) {
+    return Math.degrees(Math.acos(x));
+  };
+
+  Math.asind = function(x) {
+    return Math.degrees(Math.asin(x));
+  };
+
+  Math.atand = function(x) {
+    return Math.degrees(Math.atan(x));
+  };
+
+  Math.atan2d = function(x) {
+    return Math.degrees(Math.atan2(x));
+  };
+
+  getPatternTime = function() {
+    return stg.elapsedTime - stg.startTime;
+  }
 
   addPatternTimeout = function(f, milliseconds) {
     var handle = setTimeout(f, milliseconds);
@@ -20,11 +52,43 @@ define('utils', ['bullet'], function() {
   };
 
   removePatternTimeout = function(handle) {
-
+    var i = stg.patternTimeouts.indexOf(handle);
+    if (i > -1) {
+      clearTimeout(stg.patternTimeouts[i]);
+      stg.patternTimeouts.splice(i, 1);
+    }
   };
 
   removePatternInterval = function(handle) {
+    var i = stg.patternIntervals.indexOf(handle);
+    if (i > -1) {
+      clearInterval(stg.patternIntervals[i]);
+      stg.patternIntervals.splice(i, 1);
+    }
 
+  };
+
+  addBullet = function(args) {
+    var b = new Bullet(args);
+    stg.bullets.push(b);
+    return b;
+  };
+
+  removeBullet = function(b) {
+    var i = stg.bullets.indexOf(b);
+    if (i > -1) stg.bullets.splice(i, 1);
+  };
+
+  clearPatternTimeouts = function() {
+    stg.patternTimeouts.forEach(function(t) {
+      clearTimeout(t);
+    });
+  };
+
+  clearPatternIntervals = function() {
+    stg.patternIntervals.forEach(function(t) {
+      clearInterval(t);
+    });
   };
 
   return {

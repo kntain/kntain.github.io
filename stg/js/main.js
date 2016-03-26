@@ -73,13 +73,8 @@ require(['joystick', 'player-ship', 'bullet', 'utils', 'pattern-loader'], functi
   }
 
   function clearPatternTimeoutsAndIntervals() {
-    stg.patternTimeouts.forEach(function(t) {
-      clearTimeout(t);
-    });
-
-    stg.patternIntervals.forEach(function(t) {
-      clearInterval(t);
-    });
+    clearPatternTimeouts();
+    clearPatternIntervals();
   }
 
   function updateBullets(deltaTime) {
@@ -163,9 +158,9 @@ require(['joystick', 'player-ship', 'bullet', 'utils', 'pattern-loader'], functi
   }
 
   function populateEditor(pattern) {
-    //$('#activateTextArea').text(pattern.activate.toString());
     $('#patternName').val(pattern.name);
     stg.activateMethodEditor.setValue(pattern.activate.toString());
+    clearTimeout(stg.editorRefreshTimerHandle);
   }
 
   function populateCurrentPatternFromEditor() {
