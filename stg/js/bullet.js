@@ -1,17 +1,23 @@
 define('bullet', function() {
   return function Bullet(args) {
+    if (typeof args == 'undefined') args = {};
     this.x = (typeof args.x == 'undefined') ? stg.screenWidth * 0.5 : args.x;
     this.y = (typeof args.y == 'undefined') ? stg.screenHeight * 0.25 : args.y;
-    this.movementDir = args.dir || 0;
-    this.movementSpeed = args.speed || 120;
+
+    if (args.aimed != false) {
+      this.movementDir = getDegreesToPlayer(this.x, this.y) + (args.dir || 0);
+    }
+    else {
+      this.movementDir = args.dir || 0;
+    }
+    this.movementSpeed = args.speed || stg.screenWidth / 2;
     this.hitRadius = args.hitRadius || 1;
     this.drawRadius = args.drawRadius || 3;
     this.isPendingKill = false;
 
-
     this.update = function(deltaTime) {
-      this.x += Math.sin(Math.radians(this.movementDir)) * this.movementSpeed * deltaTime;
-      this.y += Math.cos(Math.radians(this.movementDir)) * this.movementSpeed * deltaTime;
+      this.x += Math.cos(Math.radians(this.movementDir)) * this.movementSpeed * deltaTime;
+      this.y += Math.sin(Math.radians(this.movementDir)) * this.movementSpeed * deltaTime;
 
       if (this.x - this.drawRadius > stg.screenWidth
           ||  this.x + this.drawRadius < 0

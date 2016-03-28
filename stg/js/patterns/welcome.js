@@ -3,25 +3,39 @@ define(['bullet'], function(Bullet) {
     name:'Welcome Pattern',
     activate: function() {
 
-      // firing a bullet immediately:
-      addBullet({x:stg.screenWidth * .5, y: stg.screenHeight*.25, dir: 90, speed: 120});
+      // firing a totally default bullet:
+      addBullet();
 
-      // firing three bullets after a half-second delay:
-      addPatternTimeout(function(){
-        addBullet({dir: 75, speed: 110});
-        addBullet({dir: 90, speed: 110});
-        addBullet({dir: 105, speed: 110});
-      }, 500);
+      // firing bullets with some parameters:
+      addBullet({x:stg.screenWidth * .25, y: stg.screenHeight*.1, speed: 60, drawRadius:6});
+      addBullet({x:stg.screenWidth * .75, y: stg.screenHeight*.1, speed: 60, drawRadius:6});
 
-      // begin firing repeatedly in random directions with a widening range after a full-second delay:
+      // use dir to specify a direction in degrees.
+      // when aimed is true (which it is by default),
+      // dir will be an offset to the aimed angle:
+      addBullet({x:stg.screenWidth * .25, y: stg.screenHeight*.1, speed: 160});
+      addBullet({x:stg.screenWidth * .75, y: stg.screenHeight*.1, speed: 160});
+
+      // firing three bullets after a one-second delay:
       addPatternTimeout(function(){
-        addPatternInterval(function(){
-          addBullet({dir: 67.5 + Math.random() * 45  });
-        }, 10);
+        addBullet({dir: -15, speed: 110});
+        addBullet({speed: 110});
+        addBullet({dir: 15, speed: 110});
       }, 1000);
 
-      // clearing all repeaters after two seconds:
-      addPatternTimeout(function(){clearPatternIntervals()}, 2000);
+      // firing a big dumb shotgun blast every half second,
+      // starting after two seconds:
+      addPatternTimeout(function(){
+        addPatternInterval(function(){
+          for (var i=0;i<20;i++) {
+            addBullet({ dir: Math.random() * 45 - 22.5,
+                        speed: Math.random() * 40 + 80});
+          }
+        }, 500);
+      }, 2000);
+
+      // clearing all repeaters after 20 seconds:
+      addPatternTimeout(function(){clearPatternIntervals()}, 20000);
 
     }
   };

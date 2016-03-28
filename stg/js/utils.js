@@ -31,9 +31,17 @@ define('utils', ['bullet'], function(Bullet) {
     return Math.degrees(Math.atan(x));
   };
 
-  Math.atan2d = function(x) {
-    return Math.degrees(Math.atan2(x));
+  Math.atan2d = function(y,x) {
+    return Math.degrees(Math.atan2(y,x));
   };
+
+  getRadiansToPlayer = function(x, y) {
+    return Math.atan2(stg.playerShip.y-y,stg.playerShip.x-x);
+  }
+
+  getDegreesToPlayer = function(x, y) {
+    return Math.degrees(getRadiansToPlayer(x,y));
+  }
 
   getPatternTime = function() {
     return stg.elapsedTime - stg.startTime;
