@@ -99,6 +99,16 @@ define('utils', ['bullet'], function(Bullet) {
     });
   };
 
+  addBulletSpread = function(args) {
+    var protoBullet = new Bullet(args);
+    var startingDegrees = protoBullet.dir - args.spread.degrees/2.0 + args.spread.degrees/args.spread.numBullets/2
+
+    for (var i=0;i<args.spread.numBullets;i++) {
+      var bullet = addBullet(args);
+      bullet.dir = startingDegrees + i*(args.spread.degrees/args.spread.numBullets);
+    }
+  };
+
   return {
 
     distanceBetweenPoints: function(x1, x2, y1, y2) {

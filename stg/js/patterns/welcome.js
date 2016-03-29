@@ -2,41 +2,59 @@ define(['bullet'], function(Bullet) {
   return {
     name:'Welcome Pattern',
     activate: function() {
+      // uncomment to fire a totally default bullet, which is an aimed
+      // bullet from the upper-middle:
+      // addBullet();
 
-      // fire a totally default bullet:
-      addBullet();
-
-      // fire bullets with some parameters:
-      addBullet({x:stg.screenWidth * .25, y: stg.screenHeight*.1, speed: 60, drawRadius:6});
-      addBullet({x:stg.screenWidth * .75, y: stg.screenHeight*.1, speed: 60, drawRadius:6});
-
-      // use dir to specify a direction in degrees.
-      // when aimed is true (which it is by default),
-      // dir will be an offset to the aimed angle:
-      addBullet({x:stg.screenWidth * .25, y: stg.screenHeight*.1, dir:5,  speed: 160});
-      addBullet({x:stg.screenWidth * .75, y: stg.screenHeight*.1, dir:-5, speed: 160});
-
-      // firing three bullets after a one-second delay:
+      // at half a second, fire two bigger yellow bullets from different
+      // positions, aimed 5 degrees off from the player:
       addPatternTimeout(function(){
-        addBullet({dir: -15, speed: 110});
-        addBullet({speed: 110});
-        addBullet({dir: 15, speed: 110});
+        addBullet({x: 60,  y: 32, speed: 100, dir: 5,  drawRadius:6, outerColor: '#FFFF00'});
+        addBullet({x: 180, y: 32, speed: 100, dir: -5, drawRadius:6, outerColor: '#FFFF00'});
+      }, 500);
+
+      // set aimed to false to ignore player position:
+      addPatternTimeout(function(){
+        addBullet({x: 60,  y: 32, aimed: false, dir: 45,  outerColor: '#0000FF'});
+        addBullet({x: 180, y: 32, aimed: false, dir: 135, outerColor: '#0000FF'});
       }, 1000);
 
-      // firing a big dumb shotgun blast every half second,
-      // starting after two seconds:
-      addPatternTimeout(function(){
-        addPatternInterval(function(){
-          for (var i=0;i<20;i++) {
-            addBullet({ dir: Math.random() * 45 - 22.5,
-                        speed: Math.random() * 40 + 80});
-          }
-        }, 500);
+      // fire a spread of bullets:
+      addPatternTimeout(function() {
+        addBulletSpread({
+          x: 120,
+          y: 5,
+          outerColor: '#FF00FF',
+          spread: {numBullets: 6, degrees: 45}
+        });
+      }, 1500);
+
+      // curve bullets with rotSpeed:
+      addPatternTimeout(function() {
+        addBullet({rotSpeed: 110,   outerColor: '#00FF00'});
+        addBullet({rotSpeed: -110,  outerColor: '#00FF00'});
       }, 2000);
 
-      // clearing all intervals after 20 seconds:
-      addPatternTimeout(function(){clearPatternIntervals()}, 20000);
+      // use accel to set acceleration:
+      addPatternTimeout(function() {
+        addBullet({accel:-50, outerColor: '#FF0000'});
+      }, 2500);
 
+      // fire big dumb shotgun blasts to the side every
+      // half second, starting after 2.5 seconds:
+      addPatternTimeout(function(){
+        addPatternInterval(function(){
+         for (var i=0;i<20;i++) {
+           addBullet({  dir: Math.random() * 45 - 22.5 + 90,
+                        speed: Math.random() * 40 + 80  });
+           addBullet({  dir: Math.random() * 45 - 22.5 - 90,
+                        speed: Math.random() * 40 + 80  });
+         }
+       }, 500);
+     }, 2500);
+
+      // clear all intervals after 6 seconds:
+      addPatternTimeout(function(){clearPatternIntervals()}, 6000);
     }
   };
 

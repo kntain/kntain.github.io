@@ -56,8 +56,10 @@ define('player-ship', function() {
     this.drawHitRegion = function() {
       stg.ctx.beginPath();
       stg.ctx.fillStyle = '#FF0000';
+      stg.ctx.strokeStyle = '#AA0000';
       stg.ctx.arc(this.x, this.y, this.hitRadius, 0, 2 * Math.PI);
       stg.ctx.fill();
+      stg.ctx.stroke();
       stg.ctx.closePath();
     };
   };
