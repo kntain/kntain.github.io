@@ -3,18 +3,18 @@ define(['bullet'], function(Bullet) {
     name:'Welcome Pattern',
     activate: function() {
 
-      // firing a totally default bullet:
+      // fire a totally default bullet:
       addBullet();
 
-      // firing bullets with some parameters:
+      // fire bullets with some parameters:
       addBullet({x:stg.screenWidth * .25, y: stg.screenHeight*.1, speed: 60, drawRadius:6});
       addBullet({x:stg.screenWidth * .75, y: stg.screenHeight*.1, speed: 60, drawRadius:6});
 
       // use dir to specify a direction in degrees.
       // when aimed is true (which it is by default),
       // dir will be an offset to the aimed angle:
-      addBullet({x:stg.screenWidth * .25, y: stg.screenHeight*.1, speed: 160});
-      addBullet({x:stg.screenWidth * .75, y: stg.screenHeight*.1, speed: 160});
+      addBullet({x:stg.screenWidth * .25, y: stg.screenHeight*.1, dir:5,  speed: 160});
+      addBullet({x:stg.screenWidth * .75, y: stg.screenHeight*.1, dir:-5, speed: 160});
 
       // firing three bullets after a one-second delay:
       addPatternTimeout(function(){
@@ -34,7 +34,7 @@ define(['bullet'], function(Bullet) {
         }, 500);
       }, 2000);
 
-      // clearing all repeaters after 20 seconds:
+      // clearing all intervals after 20 seconds:
       addPatternTimeout(function(){clearPatternIntervals()}, 20000);
 
     }
