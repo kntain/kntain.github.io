@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html>
   <head>
     <!-- Bootstrap stuff -->
@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap-theme.min.css" rel="stylesheet">
 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -20,7 +21,7 @@
 
     <title>STG Sandbox</title>
   </head>
-  <body>
+  <body class="ace-tomorrow-night-eighties">
     <div class="stg-container container-fluid fill text-center">
       <div class="row fill">
 
@@ -31,31 +32,38 @@
             </div>
             <div class="row height10">
               <div class="btn-group" role="group" aria-label="...">
-                <button type="button" id="resetButton" class="btn btn-primary"><u>R</u>eset</button>
-                <div class="btn-group dropup" role="group">
-                  <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <span class="caret"></span>
-                  </button>
-                  <ul id="stgPatternDropdownItems" class="dropdown-menu"></ul>
-                </div>
-                <button type="button" data-toggle="button" class="btn btn-primary" id="invincibleButton"><u>I</u>nvincible</button>
+                <button type="button" id="resetButton" class="btn btn-primary">
+                  <span class="glyphicon glyphicon-repeat"></span> <u>R</u>eset
+                </button>
+                <button type="button" data-toggle="button" class="btn btn-primary" id="invincibleButton">
+                  <span class="glyphicon glyphicon-star"></span> <u>I</u>nvincible
+                </button>
               </div>
             </div>
         </div>
 
         <div class="col-xs-6 fill edit-column">
           <div class="row">
-              <input type="text" class="form-control" placeholder="Pattern Name" id="patternName">
+            <div class="col-xs-12 no-padding">
+              <div class="input-group">
+                <span class="input-group-btn">
+                  <button type="button" id="newPattern" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span></button>
+                  <div class="btn-group dropdown" role="group">
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <span class="glyphicon glyphicon-folder-open"></span>
+                    </button>
+                    <ul id="stgPatternDropdownItems" class="dropdown-menu"></ul>
+                  </div>
+                  <button type="button" data-toggle="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span></button>
+                </span>
+                <input type="text" class="form-control ace-tomorrow-night-eighties" placeholder="Pattern Name" id="patternName">
+
+              </div>
+            </div>
           </div>
-          <!-- <div class="row">
-            <ul class="nav nav-tabs">
-              <li role="presentation" class="active"><a href="#">Activate Method</a></li>
-              <li role="presentation"><a href="#">Update Method</a></li>
-            </ul>
-          </div> -->
+
           <div class="row editor-row">
-            <!-- <textarea class="editor-text-area fill form-control" id="activateTextArea"></textarea> -->
-              <div id="activateMethodEditor" class="stg-editor text-left"></div>
+            <div id="activateMethodEditor" class="stg-editor text-left"></div>
           </div>
         </div>
 

@@ -1,5 +1,5 @@
 define(['bullet'], function(Bullet) {
-  return {
+  var pattern = {
     name:'Radial Burst Fast',
     activate: function() {
       var burst = function () {
@@ -10,4 +10,6 @@ define(['bullet'], function(Bullet) {
       addPatternInterval(burst, 250);
     }
   };
+  pattern.activate = pattern.activate.toString();
+  return pattern;
 });

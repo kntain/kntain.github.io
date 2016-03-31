@@ -1,5 +1,5 @@
 var stg = {};
-require(['joystick', 'player-ship', 'bullet', 'utils', 'pattern-loader'], function(Joystick, PlayerShip, Bullet, Utils, PatternLoader) {
+require(['joystick', 'player-ship', 'bullet', 'utils', 'pattern-manager'], function(Joystick, PlayerShip, Bullet, Utils, PatternManager) {
 
   stg.elapsedTime     = 0.0;
   stg.screenWidth     = 240;
@@ -13,8 +13,8 @@ require(['joystick', 'player-ship', 'bullet', 'utils', 'pattern-loader'], functi
   stg.bullets = [];
   stg.patternTimeouts = [];
   stg.patternIntervals = [];
-  stg.patterns = PatternLoader.patterns;
-  stg.currentPattern = {};
+  stg.patterns = PatternManager.patterns;
+  stg.currentPattern;
   stg.isVictory = false;
   stg.editorRefreshTimerHandle = null;
   initializeUI();
@@ -51,14 +51,16 @@ require(['joystick', 'player-ship', 'bullet', 'utils', 'pattern-loader'], functi
     stg.timeOfDeath = 0.0;
 
     if (pattern) {
-      stg.currentPattern = { name: pattern.name };
-      eval('stg.currentPattern.activate = '+pattern.activate.toString())
+      stg.currentPattern = pattern;
       populateEditor(pattern);
-    } else {
-      populateCurrentPatternFromEditor();
     }
 
-    stg.currentPattern.activate();
+    try {
+      eval('var currentActivate = '+stg.currentPattern.activate);
+      currentActivate();
+    } catch (e) {
+      stg.playerShip.isDead = true;
+    }
   };
 
   function getScreenContext() {
@@ -138,15 +140,31 @@ require(['joystick', 'player-ship', 'bullet', 'utils', 'pattern-loader'], functi
     stg.activateMethodEditor = ace.edit("activateMethodEditor");
     stg.activateMethodEditor.setTheme("ace/theme/tomorrow_night_eighties");
     stg.activateMethodEditor.session.setMode("ace/mode/javascript");
-    stg.activateMethodEditor.on('change', function() {
-      clearTimeout(stg.editorRefreshTimerHandle);
-      stg.editorRefreshTimerHandle = setTimeout(startGame,1000);
+    stg.activateMethodEditor.on('change', saveAndExecute);
+    $('#patternName').on('input', saveAndExecute);
+
+    $('#newPattern').click(function() {
+      PatternManager.addNewPattern();
+      initializePatternDropdown();
+      //$('#stgPatternDropdownItems').first().click();
     });
 
     initializePatternDropdown();
   }
 
+  function saveAndExecute() {
+    clearTimeout(stg.editorRefreshTimerHandle);
+    stg.editorRefreshTimerHandle = setTimeout(function(){
+      stg.currentPattern.name = $('#patternName').val();
+      stg.currentPattern.activate = stg.activateMethodEditor.getValue();
+      PatternManager.saveAllPatternsToLocalStorage();
+      initializePatternDropdown();
+      startGame();
+    },1000);
+  }
+
   function initializePatternDropdown() {
+    $('#stgPatternDropdownItems').empty();
     stg.patterns.forEach(function(p){
       var item = $('<li><a>'+p.name+'</a></li>');
       item.data('pattern', p);
@@ -159,19 +177,7 @@ require(['joystick', 'player-ship', 'bullet', 'utils', 'pattern-loader'], functi
 
   function populateEditor(pattern) {
     $('#patternName').val(pattern.name);
-    stg.activateMethodEditor.setValue(pattern.activate.toString());
+    stg.activateMethodEditor.setValue(pattern.activate);
     clearTimeout(stg.editorRefreshTimerHandle);
   }
-
-  function populateCurrentPatternFromEditor() {
-    stg.currentPattern.name = $('#patternName').val();
-    try {
-      eval('stg.currentPattern.activate = '+stg.activateMethodEditor.getValue());
-    } catch (e) {
-      stg.currentPattern.activate = function() {};
-      stg.playerShip.isDead = true;
-    }
-  }
-
-
 });

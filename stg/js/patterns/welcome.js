@@ -1,5 +1,5 @@
 define(['bullet'], function(Bullet) {
-  return {
+  var pattern = {
     name:'Welcome Pattern',
     activate: function() {
       // uncomment to fire a totally default bullet, which is an aimed
@@ -57,5 +57,8 @@ define(['bullet'], function(Bullet) {
       addPatternTimeout(function(){clearPatternIntervals()}, 6000);
     }
   };
+
+  pattern.activate = pattern.activate.toString();
+  return pattern;
 
 });

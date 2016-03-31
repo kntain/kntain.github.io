@@ -8,8 +8,12 @@ html, body {
     height: 100%;
 }
 
+.no-padding {
+  padding:0px;
+}
+
 .game-column {
-  background-color: #222222;
+
 }
 
 .stg-canvas-container {
