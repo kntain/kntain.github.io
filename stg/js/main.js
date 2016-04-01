@@ -152,7 +152,7 @@ require(['joystick', 'player-ship', 'bullet', 'utils', 'pattern-manager'], funct
       stg.activateMethodEditor.session.setMode("ace/mode/javascript");
       stg.activateMethodEditor.on('change', saveAndExecute);
     } else {
-      stg.activateMethodEditor = $('<textArea class="stg-text-area theme"/>');
+      stg.activateMethodEditor = $('<textArea class="stg-text-area theme" wrap="off"/>');
       $('#activateMethodEditorContainer').append(stg.activateMethodEditor);
       stg.activateMethodEditor.on('input', saveAndExecute);
     }
