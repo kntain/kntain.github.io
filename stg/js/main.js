@@ -145,6 +145,7 @@ require(['joystick', 'player-ship', 'bullet', 'utils', 'pattern-manager'], funct
     });
 
     stg.activateMethodEditor = ace.edit("activateMethodEditor");
+    stg.activateMethodEditor.$blockScrolling = Infinity;
     stg.activateMethodEditor.setTheme("ace/theme/tomorrow_night_eighties");
     stg.activateMethodEditor.session.setMode("ace/mode/javascript");
     stg.activateMethodEditor.on('change', saveAndExecute);
@@ -201,7 +202,7 @@ require(['joystick', 'player-ship', 'bullet', 'utils', 'pattern-manager'], funct
 
   function populateEditor(pattern) {
     $('#patternName').val(pattern.name);
-    stg.activateMethodEditor.setValue(pattern.activate);
+    stg.activateMethodEditor.setValue(pattern.activate,-1);
     clearTimeout(stg.editorRefreshTimerHandle);
   }
 });
