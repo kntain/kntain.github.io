@@ -132,10 +132,10 @@ require(['joystick', 'player-ship', 'bullet', 'utils', 'pattern-manager'], funct
   function initializeUI() {
     $('#resetButton').click(function() {
       startGame();
-      window.scrollTo(0,0);
+      window.setTimeout(function() {window.scrollTo(0,0);}, 0);
     });
     $('#editButton').click(function() {
-      window.scrollTo(0,document.body.scrollHeight);
+      window.setTimeout(function() {window.scrollTo(0,document.body.scrollHeight);}, 0);
     });
     $('#invincibleButton').click(function() {
       stg.playerShip.isInvincible = !stg.playerShip.isInvincible;
