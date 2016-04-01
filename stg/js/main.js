@@ -202,7 +202,7 @@ require(['joystick', 'player-ship', 'bullet', 'utils', 'pattern-manager'], funct
 
   function populateEditor(pattern) {
     $('#patternName').val(pattern.name);
-    stg.activateMethodEditor.setValue(pattern.activate,0);
+    stg.activateMethodEditor.setValue(pattern.activate, -1);
     clearTimeout(stg.editorRefreshTimerHandle);
   }
 });
