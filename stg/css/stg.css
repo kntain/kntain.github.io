@@ -12,6 +12,7 @@ html, body {
   resize: none;
   flex-grow:1;
   overflow:scroll;
+  white-space:nowrap;
 }
 
 .fill {
