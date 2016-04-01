@@ -18,6 +18,7 @@ require(['joystick', 'player-ship', 'bullet', 'utils', 'pattern-manager'], funct
   stg.currentPattern;
   stg.isVictory = false;
   stg.editorRefreshTimerHandle = null;
+  stg.useAce = window.location.search.indexOf('noace') == -1
   initializeUI();
 
   startGame(stg.examplePatterns[0]);
@@ -144,11 +145,18 @@ require(['joystick', 'player-ship', 'bullet', 'utils', 'pattern-manager'], funct
       stg.playerShip.isInvincible = !stg.playerShip.isInvincible;
     });
 
-    stg.activateMethodEditor = ace.edit("activateMethodEditor");
-    stg.activateMethodEditor.$blockScrolling = Infinity;
-    stg.activateMethodEditor.setTheme("ace/theme/tomorrow_night_eighties");
-    stg.activateMethodEditor.session.setMode("ace/mode/javascript");
-    stg.activateMethodEditor.on('change', saveAndExecute);
+    if (stg.useAce) {
+      stg.activateMethodEditor = ace.edit("activateMethodEditorContainer");
+      stg.activateMethodEditor.$blockScrolling = Infinity;
+      stg.activateMethodEditor.setTheme("ace/theme/tomorrow_night_eighties");
+      stg.activateMethodEditor.session.setMode("ace/mode/javascript");
+      stg.activateMethodEditor.on('change', saveAndExecute);
+    } else {
+      stg.activateMethodEditor = $('<textArea class="stg-text-area theme"/>');
+      $('#activateMethodEditorContainer').append(stg.activateMethodEditor);
+      stg.activateMethodEditor.on('input', saveAndExecute);
+    }
+
     $('#patternName').on('input', saveAndExecute);
 
     $('#newPattern').click(function() {
@@ -170,7 +178,11 @@ require(['joystick', 'player-ship', 'bullet', 'utils', 'pattern-manager'], funct
     clearTimeout(stg.editorRefreshTimerHandle);
     stg.editorRefreshTimerHandle = setTimeout(function(){
       stg.currentPattern.name = $('#patternName').val();
-      stg.currentPattern.activate = stg.activateMethodEditor.getValue();
+      if (stg.useAce) {
+        stg.currentPattern.activate = stg.activateMethodEditor.getValue();
+      } else {
+        stg.currentPattern.activate = stg.activateMethodEditor.val();
+      }
       PatternManager.saveAllPatternsToLocalStorage();
       initializePatternDropdown();
       startGame();
@@ -202,7 +214,11 @@ require(['joystick', 'player-ship', 'bullet', 'utils', 'pattern-manager'], funct
 
   function populateEditor(pattern) {
     $('#patternName').val(pattern.name);
-    stg.activateMethodEditor.setValue(pattern.activate, -1);
+    if (stg.useAce) {
+      stg.activateMethodEditor.setValue(pattern.activate, -1);
+    } else {
+      stg.activateMethodEditor.val(pattern.activate);
+    }
     clearTimeout(stg.editorRefreshTimerHandle);
   }
 });
