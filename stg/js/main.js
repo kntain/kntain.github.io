@@ -149,15 +149,6 @@ require(['joystick', 'player-ship', 'bullet', 'utils', 'pattern-manager'], funct
     stg.activateMethodEditor.setTheme("ace/theme/tomorrow_night_eighties");
     stg.activateMethodEditor.session.setMode("ace/mode/javascript");
     stg.activateMethodEditor.on('change', saveAndExecute);
-
-    // this is gross but selections jack ACE up in iOS?
-    var iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-    if (iOS) {
-      stg.activateMethodEditor.on('changeSelection', function (e) {
-        stg.activateMethodEditor.getSession().selection.clearSelection();
-      });
-    }
-
     $('#patternName').on('input', saveAndExecute);
 
     $('#newPattern').click(function() {
@@ -211,7 +202,7 @@ require(['joystick', 'player-ship', 'bullet', 'utils', 'pattern-manager'], funct
 
   function populateEditor(pattern) {
     $('#patternName').val(pattern.name);
-    stg.activateMethodEditor.setValue(pattern.activate,-1);
+    stg.activateMethodEditor.setValue(pattern.activate,0);
     clearTimeout(stg.editorRefreshTimerHandle);
   }
 });
