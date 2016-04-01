@@ -137,6 +137,9 @@ require(['joystick', 'player-ship', 'bullet', 'utils', 'pattern-manager'], funct
     $('#editButton').click(function() {
       window.setTimeout(function() {window.scrollTo(0,document.body.scrollHeight);}, 0);
     });
+    $('#returnButton').click(function() {
+      $('#resetButton').click();
+    });
     $('#invincibleButton').click(function() {
       stg.playerShip.isInvincible = !stg.playerShip.isInvincible;
     });

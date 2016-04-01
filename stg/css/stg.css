@@ -18,13 +18,20 @@ html, body {
 
 .stg-canvas-container {
   height:100%;
-  padding-top:2.5%;
-  padding-bottom:2.5%;
 }
 
 .stg-canvas {
   height:100%;
-  width:auto;
+  width: auto;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+@media only screen and (max-width: 768px)  {
+  .stg-canvas {
+    height:75%;
+  }
 }
 
 .edit-column {
@@ -34,12 +41,9 @@ html, body {
 
 @media only screen and (max-width: 992px)  {
   .edit-column {
-    display: flex;
-    flex-direction:column;
     width:100%;
   }
 }
-
 
 .editor-row {
   display:flex;
@@ -56,42 +60,15 @@ html, body {
     height: 90%;
 }
 
-.height80 {
-    min-height: 80%;
-    height: 80%;
-}
-
-.height70 {
-    min-height: 70%;
-    height: 70%;
-}
-
-.height60 {
-    min-height: 60%;
-    height: 60%;
-}
-
-.height50 {
-    min-height: 50%;
-    height: 50%;
-}
-
-.height40 {
-    min-height: 40%;
-    height: 40%;
-}
-
-.height30 {
-    min-height: 30%;
-    height: 30%;
-}
-
-.height20 {
-    min-height: 20%;
-    height: 20%;
-}
-
 .height10 {
     min-height: 10%;
     height: 10%;
+}
+
+@media only screen and (max-width: 768px)  {
+  .valign {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+  }
 }
