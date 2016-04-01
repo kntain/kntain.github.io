@@ -1,6 +1,6 @@
 define(['bullet'], function(Bullet) {
   var pattern = {
-    name:'Welcome Pattern',
+    name:'[Example] Welcome Pattern',
     activate: function() {
       // uncomment to fire a totally default bullet, which is an aimed
       // bullet from the upper-middle:

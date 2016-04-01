@@ -1,6 +1,6 @@
 define(['bullet'], function(Bullet) {
   var pattern = {
-    name:'Radial Burst Fast',
+    name:'[Example] Radial Burst Fast',
     activate: function() {
       var burst = function () {
         for (var i=0; i < 120; i++) {

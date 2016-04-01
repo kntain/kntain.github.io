@@ -14,12 +14,13 @@ require(['joystick', 'player-ship', 'bullet', 'utils', 'pattern-manager'], funct
   stg.patternTimeouts = [];
   stg.patternIntervals = [];
   stg.patterns = PatternManager.patterns;
+  stg.examplePatterns = PatternManager.examplePatterns;
   stg.currentPattern;
   stg.isVictory = false;
   stg.editorRefreshTimerHandle = null;
   initializeUI();
 
-  startGame(stg.patterns[0]);
+  startGame(stg.examplePatterns[0]);
 
   mainLoop(0);
 
@@ -108,7 +109,6 @@ require(['joystick', 'player-ship', 'bullet', 'utils', 'pattern-manager'], funct
   }
 
   function draw() {
-
     if (stg.playerShip.isDead) {
       stg.ctx.fillStyle = stg.deadBackgroundColor ;
     } else if (stg.isVictory) {
@@ -146,7 +146,13 @@ require(['joystick', 'player-ship', 'bullet', 'utils', 'pattern-manager'], funct
     $('#newPattern').click(function() {
       PatternManager.addNewPattern();
       initializePatternDropdown();
-      //$('#stgPatternDropdownItems').first().click();
+      $('#stgPatternDropdownItems li').first().click();
+    });
+
+    $('#deletePattern').click(function() {
+      PatternManager.deletePattern(stg.currentPattern);
+      initializePatternDropdown();
+      $('#stgPatternDropdownItems li').first().click();
     });
 
     initializePatternDropdown();
@@ -165,13 +171,24 @@ require(['joystick', 'player-ship', 'bullet', 'utils', 'pattern-manager'], funct
 
   function initializePatternDropdown() {
     $('#stgPatternDropdownItems').empty();
-    stg.patterns.forEach(function(p){
+
+    var addPatternToDropdown = function(p) {
       var item = $('<li><a>'+p.name+'</a></li>');
       item.data('pattern', p);
       item.click(function() {
         startGame($(this).data('pattern'));
       });
       $('#stgPatternDropdownItems').append(item);
+    }
+
+    stg.patterns.forEach(function(p){
+      addPatternToDropdown(p);
+    });
+
+    $('#stgPatternDropdownItems').append('<li><hr/></li>');
+
+    stg.examplePatterns.forEach(function(p){
+      addPatternToDropdown(p);
     });
   }
 
