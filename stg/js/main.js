@@ -1,5 +1,5 @@
 var stg = {};
-require(['joystick', 'player-ship', 'bullet', 'utils', 'pattern-loader'], function(Joystick, PlayerShip, Bullet, Utils, PatternLoader) {
+require(['joystick', 'player-ship', 'bullet', 'utils', 'pattern-manager'], function(Joystick, PlayerShip, Bullet, Utils, PatternManager) {
 
   stg.elapsedTime     = 0.0;
   stg.screenWidth     = 240;
@@ -13,13 +13,15 @@ require(['joystick', 'player-ship', 'bullet', 'utils', 'pattern-loader'], functi
   stg.bullets = [];
   stg.patternTimeouts = [];
   stg.patternIntervals = [];
-  stg.patterns = PatternLoader.patterns;
-  stg.currentPattern = {};
+  stg.patterns = PatternManager.patterns;
+  stg.examplePatterns = PatternManager.examplePatterns;
+  stg.currentPattern;
   stg.isVictory = false;
   stg.editorRefreshTimerHandle = null;
+  stg.useAce = window.location.search.indexOf('noace') == -1
   initializeUI();
 
-  startGame(stg.patterns[0]);
+  startGame(stg.examplePatterns[0]);
 
   mainLoop(0);
 
@@ -51,14 +53,16 @@ require(['joystick', 'player-ship', 'bullet', 'utils', 'pattern-loader'], functi
     stg.timeOfDeath = 0.0;
 
     if (pattern) {
-      stg.currentPattern = { name: pattern.name };
-      eval('stg.currentPattern.activate = '+pattern.activate.toString())
+      stg.currentPattern = pattern;
       populateEditor(pattern);
-    } else {
-      populateCurrentPatternFromEditor();
     }
 
-    stg.currentPattern.activate();
+    try {
+      eval('var currentActivate = '+stg.currentPattern.activate);
+      currentActivate();
+    } catch (e) {
+      stg.playerShip.isDead = true;
+    }
   };
 
   function getScreenContext() {
@@ -106,7 +110,6 @@ require(['joystick', 'player-ship', 'bullet', 'utils', 'pattern-loader'], functi
   }
 
   function draw() {
-
     if (stg.playerShip.isDead) {
       stg.ctx.fillStyle = stg.deadBackgroundColor ;
     } else if (stg.isVictory) {
@@ -130,48 +133,92 @@ require(['joystick', 'player-ship', 'bullet', 'utils', 'pattern-loader'], functi
   function initializeUI() {
     $('#resetButton').click(function() {
       startGame();
+      window.setTimeout(function() {window.scrollTo(0,0);}, 0);
+    });
+    $('#editButton').click(function() {
+      window.setTimeout(function() {window.scrollTo(0,document.body.scrollHeight);}, 0);
+    });
+    $('#returnButton').click(function() {
+      $('#resetButton').click();
     });
     $('#invincibleButton').click(function() {
       stg.playerShip.isInvincible = !stg.playerShip.isInvincible;
     });
 
-    stg.activateMethodEditor = ace.edit("activateMethodEditor");
-    stg.activateMethodEditor.setTheme("ace/theme/tomorrow_night_eighties");
-    stg.activateMethodEditor.session.setMode("ace/mode/javascript");
-    stg.activateMethodEditor.on('change', function() {
-      clearTimeout(stg.editorRefreshTimerHandle);
-      stg.editorRefreshTimerHandle = setTimeout(startGame,1000);
+    if (stg.useAce) {
+      stg.activateMethodEditor = ace.edit("activateMethodEditorContainer");
+      stg.activateMethodEditor.$blockScrolling = Infinity;
+      stg.activateMethodEditor.setTheme("ace/theme/tomorrow_night_eighties");
+      stg.activateMethodEditor.session.setMode("ace/mode/javascript");
+      stg.activateMethodEditor.on('change', saveAndExecute);
+    } else {
+      stg.activateMethodEditor = $('<textArea class="stg-text-area theme" wrap="off"/>');
+      $('#activateMethodEditorContainer').append(stg.activateMethodEditor);
+      stg.activateMethodEditor.on('input', saveAndExecute);
+    }
+
+    $('#patternName').on('input', saveAndExecute);
+
+    $('#newPattern').click(function() {
+      PatternManager.addNewPattern();
+      initializePatternDropdown();
+      $('#stgPatternDropdownItems li').first().click();
+    });
+
+    $('#deletePattern').click(function() {
+      PatternManager.deletePattern(stg.currentPattern);
+      initializePatternDropdown();
+      $('#stgPatternDropdownItems li').first().click();
     });
 
     initializePatternDropdown();
   }
 
+  function saveAndExecute() {
+    clearTimeout(stg.editorRefreshTimerHandle);
+    stg.editorRefreshTimerHandle = setTimeout(function(){
+      stg.currentPattern.name = $('#patternName').val();
+      if (stg.useAce) {
+        stg.currentPattern.activate = stg.activateMethodEditor.getValue();
+      } else {
+        stg.currentPattern.activate = stg.activateMethodEditor.val();
+      }
+      PatternManager.saveAllPatternsToLocalStorage();
+      initializePatternDropdown();
+      startGame();
+    },1000);
+  }
+
   function initializePatternDropdown() {
-    stg.patterns.forEach(function(p){
+    $('#stgPatternDropdownItems').empty();
+
+    var addPatternToDropdown = function(p) {
       var item = $('<li><a>'+p.name+'</a></li>');
       item.data('pattern', p);
       item.click(function() {
         startGame($(this).data('pattern'));
       });
       $('#stgPatternDropdownItems').append(item);
+    }
+
+    stg.patterns.forEach(function(p){
+      addPatternToDropdown(p);
+    });
+
+    $('#stgPatternDropdownItems').append('<li><hr/></li>');
+
+    stg.examplePatterns.forEach(function(p){
+      addPatternToDropdown(p);
     });
   }
 
   function populateEditor(pattern) {
     $('#patternName').val(pattern.name);
-    stg.activateMethodEditor.setValue(pattern.activate.toString());
+    if (stg.useAce) {
+      stg.activateMethodEditor.setValue(pattern.activate, -1);
+    } else {
+      stg.activateMethodEditor.val(pattern.activate);
+    }
     clearTimeout(stg.editorRefreshTimerHandle);
   }
-
-  function populateCurrentPatternFromEditor() {
-    stg.currentPattern.name = $('#patternName').val();
-    try {
-      eval('stg.currentPattern.activate = '+stg.activateMethodEditor.getValue());
-    } catch (e) {
-      stg.currentPattern.activate = function() {};
-      stg.playerShip.isDead = true;
-    }
-  }
-
-
 });

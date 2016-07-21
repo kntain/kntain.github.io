@@ -1,29 +1,64 @@
 define(['bullet'], function(Bullet) {
-  return {
-    name:'Welcome Pattern',
+  var pattern = {
+    name:'[Example] Welcome Pattern',
     activate: function() {
+      // uncomment to fire a totally default bullet, which is an aimed
+      // bullet from the upper-middle:
+      // addBullet();
 
-      // firing a bullet immediately:
-      addBullet({x:stg.screenWidth * .5, y: stg.screenHeight*.25, dir: 90, speed: 120});
-
-      // firing three bullets after a half-second delay:
+      // at half a second, fire two bigger yellow bullets from different
+      // positions, aimed 5 degrees off from the player:
       addPatternTimeout(function(){
-        addBullet({dir: 75, speed: 110});
-        addBullet({dir: 90, speed: 110});
-        addBullet({dir: 105, speed: 110});
+        addBullet({x: 60,  y: 32, speed: 100, dir: 5,  drawRadius:6, outerColor: '#FFFF00'});
+        addBullet({x: 180, y: 32, speed: 100, dir: -5, drawRadius:6, outerColor: '#FFFF00'});
       }, 500);
 
-      // begin firing repeatedly in random directions with a widening range after a full-second delay:
+      // set aimed to false to ignore player position:
       addPatternTimeout(function(){
-        addPatternInterval(function(){
-          addBullet({dir: 67.5 + Math.random() * 45  });
-        }, 10);
+        addBullet({x: 60,  y: 32, aimed: false, dir: 45,  outerColor: '#0000FF'});
+        addBullet({x: 180, y: 32, aimed: false, dir: 135, outerColor: '#0000FF'});
       }, 1000);
 
-      // clearing all repeaters after two seconds:
-      addPatternTimeout(function(){clearPatternIntervals()}, 2000);
+      // fire a spread of bullets:
+      addPatternTimeout(function() {
+        addBulletSpread({
+          x: 120,
+          y: 5,
+          outerColor: '#FF00FF',
+          spread: {numBullets: 6, degrees: 45}
+        });
+      }, 1500);
 
+      // curve bullets with rotSpeed:
+      addPatternTimeout(function() {
+        addBullet({rotSpeed: 110,   outerColor: '#00FF00'});
+        addBullet({rotSpeed: -110,  outerColor: '#00FF00'});
+      }, 2000);
+
+      // use accel to set acceleration:
+      addPatternTimeout(function() {
+        addBullet({accel:-50, outerColor: '#FF0000'});
+      }, 2500);
+
+      // fire big dumb shotgun blasts to the side every
+      // half second, starting after 2.5 seconds:
+      addPatternTimeout(function(){
+        addPatternInterval(function(){
+         for (var i=0;i<20;i++) {
+           addBullet({  dir: Math.random() * 45 - 22.5 + 90,
+                        speed: Math.random() * 40 + 80  });
+           addBullet({  dir: Math.random() * 45 - 22.5 - 90,
+                        speed: Math.random() * 40 + 80  });
+         }
+       }, 500);
+     }, 2500);
+
+      // clear all intervals after 6 seconds:
+      addPatternTimeout(function(){clearPatternIntervals()}, 6000);
     }
   };
+
+  pattern.activate = pattern.activate.toString();
+  return pattern;
 
 });

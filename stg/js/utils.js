@@ -31,9 +31,17 @@ define('utils', ['bullet'], function(Bullet) {
     return Math.degrees(Math.atan(x));
   };
 
-  Math.atan2d = function(x) {
-    return Math.degrees(Math.atan2(x));
+  Math.atan2d = function(y,x) {
+    return Math.degrees(Math.atan2(y,x));
   };
+
+  getRadiansToPlayer = function(x, y) {
+    return Math.atan2(stg.playerShip.y-y,stg.playerShip.x-x);
+  }
+
+  getDegreesToPlayer = function(x, y) {
+    return Math.degrees(getRadiansToPlayer(x,y));
+  }
 
   getPatternTime = function() {
     return stg.elapsedTime - stg.startTime;
@@ -89,6 +97,16 @@ define('utils', ['bullet'], function(Bullet) {
     stg.patternIntervals.forEach(function(t) {
       clearInterval(t);
     });
+  };
+
+  addBulletSpread = function(args) {
+    var protoBullet = new Bullet(args);
+    var startingDegrees = protoBullet.dir - args.spread.degrees/2.0 + args.spread.degrees/args.spread.numBullets/2
+
+    for (var i=0;i<args.spread.numBullets;i++) {
+      var bullet = addBullet(args);
+      bullet.dir = startingDegrees + i*(args.spread.degrees/args.spread.numBullets);
+    }
   };
 
   return {
